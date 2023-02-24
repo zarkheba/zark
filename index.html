@@ -1,59 +1,70 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <title>Word Swipe Game</title>
     <style>
-      .hello-world {
-        font-size: 60px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+      #word-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 50px);
+        grid-template-rows: repeat(1, 50px);
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
       }
-
-      .letter {
-        display: inline-block;
-        animation: dance 1s infinite alternate;
+      .grid-letter {
+        background-color: #ffffff;
+        border-radius: 5px;
+        font-size: 24px;
+        text-align: center;
+        line-height: 50px;
+        user-select: none;
       }
-
-      @keyframes dance {
-        0% {
-          transform: translate(-5px, 5px);
-        }
-        100% {
-          transform: translate(5px, -5px);
-        }
+      .grid-letter.selected {
+        background-color: #ffff00;
+      }
+      .grid-letter.swiped {
+        background-color: #00ff00;
       }
     </style>
   </head>
   <body>
-    <div class="hello-world">
-      <span class="letter" id="letter-1">H</span>
-      <span class="letter" id="letter-2">e</span>
-      <span class="letter" id="letter-3">l</span>
-      <span class="letter" id="letter-4">l</span>
-      <span class="letter" id="letter-5">o</span>
-      <span class="letter" id="letter-6"> </span>
-      <span class="letter" id="letter-7">W</span>
-      <span class="letter" id="letter-8">o</span>
-      <span class="letter" id="letter-9">r</span>
-      <span class="letter" id="letter-10">l</span>
-      <span class="letter" id="letter-11">d</span>
-    </div>
+    <div id="word-grid"></div>
     <script>
-      const letters = document.querySelectorAll('.letter');
+      // Create array of letters to randomly populate the grid
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-      letters.forEach(letter => {
-        letter.style.color = getRandomColor();
-        letter.style.animationDuration = `${Math.random() * 2 + 1}s`;
-      });
-
-      function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
+      // Create the grid of letters
+      const grid = document.getElementById('word-grid');
+      for (let i = 0; i < 10; i++) {
+        const letter = letters[Math.floor(Math.random() * letters.length)];
+        const div = document.createElement('div');
+        div.className = 'grid-letter';
+        div.innerText = letter;
+        grid.appendChild(div);
       }
+
+      // Add event listeners to each letter in the grid
+      const gridLetters = document.querySelectorAll('.grid-letter');
+      let isSwiping = false;
+      gridLetters.forEach(letter => {
+        letter.addEventListener('mousedown', () => {
+          isSwiping = true;
+          letter.classList.add('selected');
+        });
+        letter.addEventListener('mouseup', () => {
+          isSwiping = false;
+          if (letter.classList.contains('selected')) {
+            letter.classList.remove('selected');
+            letter.classList.add('swiped');
+          }
+        });
+        letter.addEventListener('mouseenter', () => {
+          if (isSwiping) {
+            letter.classList.add('selected');
+          }
+        });
+      });
     </script>
   </body>
 </html>
