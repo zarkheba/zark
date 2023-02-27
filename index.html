@@ -7,7 +7,7 @@
       #word-grid {
         display: grid;
         grid-template-columns: repeat(10, 50px);
-        grid-template-rows: repeat(1, 50px);
+        grid-template-rows: repeat(10, 50px);
         justify-content: center;
         align-items: center;
         gap: 5px;
@@ -36,7 +36,7 @@
 
       // Create the grid of letters
       const grid = document.getElementById('word-grid');
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 100; i++) {
         const letter = letters[Math.floor(Math.random() * letters.length)];
         const div = document.createElement('div');
         div.className = 'grid-letter';
