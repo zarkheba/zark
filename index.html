@@ -1,109 +1,111 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>Word Swipe Game</title>
+    <title>Word Search Puzzle</title>
     <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #f5f5f5;
-      }
-      
-      #word-grid {
+      /* grid styles */
+      .grid-container {
         display: grid;
-        grid-template-columns: repeat(10, 50px);
-        grid-template-rows: repeat(10, 50px);
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+        grid-gap: 2px;
+        margin-bottom: 20px;
+      }
+      .grid-item {
+        display: flex;
         justify-content: center;
         align-items: center;
-        gap: 5px;
-      }
-      
-      .grid-letter {
-        background-color: #ffffff;
-        border-radius: 5px;
-        font-size: 24px;
+        background-color: #fff;
+        border-radius: 4px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
         text-align: center;
-        line-height: 50px;
         user-select: none;
-      }
-      
-      .grid-letter.selected {
-        background-color: #ffff00;
-      }
-      
-      .grid-letter.swiped {
-        background-color: #00ff00;
-      }
-      
-      #submit-btn {
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #4caf50;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
         cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      .grid-item.yellow {
+        background-color: #ffff99;
+      }
+      .grid-item.green {
+        background-color: #66ff66;
+      }
+      
+      /* button styles */
+      .button-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .button {
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        padding: 12px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      .button:hover {
+        background-color: #3e8e41;
       }
     </style>
   </head>
   <body>
-    <div id="word-grid"></div>
-    <button id="submit-btn">Enter Selected Letters</button>
+    <div class="grid-container">
+      <!-- generate grid with random letters -->
+      <script>
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const rows = document.querySelectorAll('.grid-container > div');
+        for (let i = 0; i < rows.length; i++) {
+          const cells = rows[i].querySelectorAll('.grid-item');
+          for (let j = 0; j < cells.length; j++) {
+            const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+            cells[j].textContent = letter;
+          }
+        }
+      </script>
+      <!-- end grid generation -->
+    </div>
+    <div class="button-container">
+      <button class="button" id="enter-button">Enter Selected Letters</button>
+    </div>
     <script>
-      // Create array of letters to randomly populate the grid
-      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
-      // Create the grid of letters
-      const grid = document.getElementById('word-grid');
-      for (let i = 0; i < 100; i++) {
-        const letter = letters[Math.floor(Math.random() * letters.length)];
-        const div = document.createElement('div');
-        div.className = 'grid-letter';
-        div.innerText = letter;
-        grid.appendChild(div);
-      }
-
-      // Add event listeners to each letter in the grid
-      const gridLetters = document.querySelectorAll('.grid-letter');
-      let isSwiping = false;
-      gridLetters.forEach(letter => {
-        letter.addEventListener('mousedown', () => {
-          isSwiping = true;
-          letter.classList.add('selected');
+      const gridItems = document.querySelectorAll('.grid-item');
+      const enterButton = document.getElementById('enter-button');
+      let clicked = false;
+      
+      // add click event listener to each grid item
+      gridItems.forEach(item => {
+        item.addEventListener('mousedown', () => {
+          item.classList.add('yellow');
+          clicked = true;
         });
-        letter.addEventListener('mouseup', () => {
-          isSwiping = false;
-          if (letter.classList.contains('selected')) {
-            letter.classList.remove('selected');
-            letter.classList.add('swiped');
+        item.addEventListener('mouseover', () => {
+          if (clicked) {
+            item.classList.add('yellow');
           }
         });
-        letter.addEventListener('mouseenter', () => {
-          if (isSwiping) {
-            letter.classList.add('selected');
-          }
+        item.addEventListener('mouseup', () => {
+          clicked = false;
         });
       });
       
-      // Add event listener to the submit button
-      const submitBtn = document.getElementById('submit-btn');
-      submitBtn.addEventListener('click', () => {
-        gridLetters.forEach(letter => {
-          if (letter.classList.contains('selected')) {
-            letter.classList.remove('selected');
-            letter.classList.add('swiped');
-          }
-          if (letter.classList.contains('swiped')) {
-            letter.style.backgroundColor = '#00ff00';
+      // add click event listener to enter button
+      enterButton.addEventListener('click', () => {
+        gridItems.forEach(item => {
+          if (item.classList.contains('yellow')) {
+            item.classList.remove('yellow');
+            item.classList.add('green');
           }
         });
       });
     </script>
   </body>
 </html>
-
